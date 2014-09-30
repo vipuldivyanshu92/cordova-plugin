@@ -5,6 +5,7 @@ import org.apache.cordova.api.CordovaPlugin;
 import org.json.JSONObject;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.apache.cordova.PluginResult;
 
 public class CalendarPlugin extends CordovaPlugin {
      public static final String ACTION_ADD_CALENDAR_ENTRY = "addCalendarEntry"; 
@@ -33,5 +34,29 @@ try {
     return false;
     }
 } 
+ public static void isScheduled (String id, CallbackContext command) {
+        SharedPreferences settings = getSharedPreferences();
+        Map<String, ?> alarms      = settings.getAll();
+        boolean isScheduled        = alarms.containsKey(id);
+        PluginResult result        = new PluginResult(PluginResult.Status.OK, isScheduled);
+
+        command.sendPluginResult(result);
+    }
+
+/**
+     * Checks if a notification with an ID is scheduled.
+     *
+     * @param id
+     *          The notification ID to be check.
+     * @param callbackContext
+     */
+       public static void getScheduledIds (CallbackContext command) {
+        SharedPreferences settings = getSharedPreferences();
+        Map<String, ?> alarms      = settings.getAll();
+        Set<String> alarmIds       = alarms.keySet();
+        JSONArray scheduledIds     = new JSONArray(alarmIds);
+
+        command.success(scheduledIds);
+    }
 
 }
